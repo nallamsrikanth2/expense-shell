@@ -14,6 +14,7 @@ VALIDATE(){
     if [ $? -ne 0 ]
     then
         echo -e "$R $2 is failure $N"
+        exit 1
     else
         echo -e "$G $2 is success $N"
     fi
@@ -22,20 +23,21 @@ VALIDATE(){
 if [ $USERID -ne 0 ]
 then    
     echo -e " $R please run this script inside the root user $N"
+    exit 1
 else
     echo -e "$G you are in root user $N"
 fi
 
-dnf install mysql-server -y
+dnf install mysql-server -y &>>$LOGFILE
 VALIDATE $? "installingvmysql server"
 
-systemctl enable mysqld
+systemctl enable mysqld  &>>$LOGFILE
 VALIDATE $? "enabling the mysqld"
 
-mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 -e 'show databases;'
+mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 -e 'show databases;'   &>>$LOGFILE
 if [ $? -ne 0 ]
 then
-    mysql_secure_installation --set-root-pass ExpenseApp@1
+    mysql_secure_installation --set-root-pass ExpenseApp@1  &>>$LOGFILE
 else
     echo -e "Already setup root password....$Y Skipping $N"
 fi
