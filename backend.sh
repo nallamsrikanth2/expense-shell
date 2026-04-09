@@ -11,9 +11,13 @@ Y="\e[33m"
 N="\e[0m"
 
 VALIDATE(){
-
+    if [ $? -ne 0 ]
+    then 
+        echo "$2 is $R failure $N"
+    else
+        echo "$2 is sucess $N"
+    fi
 }
-
 If [ $USERID -ne 0 ]
 then
     echo -e "$R Please run the script inside the server $N"
@@ -21,6 +25,7 @@ then
 else
     echo -e "$G  you are in root user $N"
 fi
+
 
 dnf module disable nodejs -y
 VALIDATE $? "disable the nodejs"
