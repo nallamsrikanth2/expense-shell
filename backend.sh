@@ -36,7 +36,7 @@ dnf module enable nodejs:20 -y
 VALIDATE $? "enable nodejs:20"
 
 id expense 
-if [ $? -ne 0]
+if [ $? -ne 0 ]
 then
     useradd expense
     VALIDATE $? "creating the user"
@@ -80,7 +80,7 @@ VALIDATE $? "enable the backend"
 dnf install mysql -y
 VALIDATE $? "install the mysql"
 
-mysql -h db.nsrikanth,online -uroot -pExpenseApp@1 < /app/schema/backend.sql
+mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
 VALIDATE $? "load the schema"
 
 systemctl restart backend
