@@ -18,7 +18,8 @@ VALIDATE(){
         echo "$2 is sucess $N"
     fi
 }
-If [ $USERID -ne 0 ]
+
+if [ $USERID -ne 0 ]
 then
     echo -e "$R Please run the script inside the server $N"
     exit 1
