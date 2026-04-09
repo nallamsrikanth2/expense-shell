@@ -13,9 +13,9 @@ N="\e[0m"
 VALIDATE(){
     if [ $? -ne 0 ]
     then 
-        echo "$2 is $R failure $N"
+        echo -e "$2 is $R failure $N"
     else
-        echo "$2 is sucess $N"
+        echo -e "$2 is $G sucess $N"
     fi
 }
 
