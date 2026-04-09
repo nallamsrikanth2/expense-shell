@@ -31,15 +31,16 @@ VALIDATE $? "installingvmysql server"
 systemctl enable mysqld
 VALIDATE $? "enabling the mysqld"
 
-mysql -h db.srikanth.online -uroot -pExpenseApp@1 -e 'show databases;'
-if [ $? -ne 0 ]
-then
-    mysql_secure_installation --set-root-pass ExpenseApp@1
-else
-    echo "Already setup root password....Skipping"
-fi
+# mysql -h db.srikanth.online -uroot -pExpenseApp@1 -e 'show databases;'
+# if [ $? -ne 0 ]
+# then
+#     mysql_secure_installation --set-root-pass ExpenseApp@1
+# else
+#     echo "Already setup root password....Skipping"
+# fi
 
-
+mysql_secure_installation --set-root-pass ExpenseApp@1
+VALIDATE $? "setup root pass"
 
 
 
