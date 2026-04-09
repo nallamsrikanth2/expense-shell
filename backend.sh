@@ -52,12 +52,18 @@ VALIDATE $? "downloading the backend code"
 
 
 cd /app
+VALIDATE $? "moving to /app directory"
+
 rm -rf /app/*
+
 unzip /tmp/backend.zip
 VALIDATE $? "unzip the backend code"
 
+cd /app
+VALIDATE $? "ensure correct directory"
+
 npm install
-VALIDATE $? "install the dependences"
+VALIDATE $? "install the dependencies"
 
 cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
 VALIDATE $? "copy backend.service into etc file"
