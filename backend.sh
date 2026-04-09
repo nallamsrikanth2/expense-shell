@@ -11,88 +11,87 @@ Y="\e[33m"
 N="\e[0m"
 
 VALIDATE(){
-    if [ $? -ne 0 ]
+    if [ $1 -ne 0 ]
     then 
-        echo -e "$2 is $R failure $N"
+        echo -e "$2 is $R FAILURE $N"
         exit 1
     else
-        echo -e "$2 is $G sucess $N"
+        echo -e "$2 is $G SUCCESS $N"
     fi
 }
 
+echo "Script started at $TIMESTAMP" &>>$LOGFILE
+
+# Root check
 if [ $USERID -ne 0 ]
 then
-    echo -e "$R Please run the script inside the server $N"
+    echo -e "$R Please run as root user $N"
     exit 1
 else
-    echo -e "$G  you are in root user $N"
+    echo -e "$G You are root user $N"
 fi
 
+# NodeJS setup
+dnf module disable nodejs -y &>>$LOGFILE
+VALIDATE $? "Disable NodeJS module"
 
-dnf module disable nodejs -y
-VALIDATE $? "disable the nodejs"
+dnf module enable nodejs:20 -y &>>$LOGFILE
+VALIDATE $? "Enable NodeJS:20"
 
-dnf module enable nodejs:20 -y
-VALIDATE $? "enable nodejs:20"
+dnf install nodejs -y &>>$LOGFILE
+VALIDATE $? "Install NodeJS"
 
-id expense 
+# Create user
+id expense &>>$LOGFILE
 if [ $? -ne 0 ]
 then
-    useradd expense
-    VALIDATE $? "creating the user"
+    useradd expense &>>$LOGFILE
+    VALIDATE $? "Creating expense user"
 else
-    echo "already user created"
+    echo -e "$Y User already exists $N"
 fi
 
-mkdir -p /app
-VALIDATE $? "creating the directory"
+# App setup
+mkdir -p /app &>>$LOGFILE
+VALIDATE $? "Create /app directory"
 
-curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
-VALIDATE $? "downloading the backend code"
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE
+VALIDATE $? "Download backend code"
 
+cd /app &>>$LOGFILE
+VALIDATE $? "Change directory to /app"
 
-cd /app
-VALIDATE $? "moving to /app directory"
+rm -rf /app/* &>>$LOGFILE
 
-rm -rf /app/*
+unzip /tmp/backend.zip &>>$LOGFILE
+VALIDATE $? "Unzip backend code"
 
-unzip /tmp/backend.zip
-VALIDATE $? "unzip the backend code"
+# Install dependencies
+npm install &>>$LOGFILE
+VALIDATE $? "Install NodeJS dependencies"
 
-cd /app
-VALIDATE $? "ensure correct directory"
+# Systemd service
+cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service &>>$LOGFILE
+VALIDATE $? "Copy backend.service"
 
-npm install
-VALIDATE $? "install the dependencies"
+systemctl daemon-reload &>>$LOGFILE
+VALIDATE $? "Daemon reload"
 
-cp /home/ec2-user/expense-shell/backend.service /etc/systemd/system/backend.service
-VALIDATE $? "copy backend.service into etc file"
+systemctl start backend &>>$LOGFILE
+VALIDATE $? "Start backend"
 
-systemctl daemon-reload
-VALIDATE $? "daemon-reload the services"
+systemctl enable backend &>>$LOGFILE
+VALIDATE $? "Enable backend"
 
-systemctl start backend
-VALIDATE $? "starting the backend"
+# MySQL client
+dnf install mysql -y &>>$LOGFILE
+VALIDATE $? "Install MySQL client"
 
-systemctl enable backend
-VALIDATE $? "enable the backend"
+# Load schema
+mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$LOGFILE
+VALIDATE $? "Load schema"
 
-dnf install mysql -y
-VALIDATE $? "install the mysql"
+systemctl restart backend &>>$LOGFILE
+VALIDATE $? "Restart backend"
 
-mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
-VALIDATE $? "load the schema"
-
-systemctl restart backend
-VALIDATE $? "restatr the backend"
-
-
-
-
-
-
-
-
-    
-
-
+echo -e "$G Backend setup completed successfully $N"
