@@ -57,8 +57,6 @@ VALIDATE $? "move to cd directory"
 rm -rf /app/*
 VALIDATE $? "remove everything in app directory"
 
-VALIDATE $? "move to cd directory"
-
 unzip /tmp/backend.zip
 VALIDATE $? "unzip the backend code"
 
