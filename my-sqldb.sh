@@ -7,7 +7,7 @@ LOGFILE=/tmp/$TIMESTAMP-$SCRIPT_NAME.log
 
 R="\e[31m"
 G="\e[32m"
-N="\e[33m"
+N="\e[0m"
 
 VALIDATE(){
     if [ $? -ne 0 ]
@@ -31,8 +31,13 @@ VALIDATE $? "installingvmysql server"
 systemctl enable mysqld
 VALIDATE $? "enabling the mysqld"
 
-mysql_secure_installation --set-root-pass ExpenseApp@1
-VALIDATE $? "set the root password"
+mysql -h db.srikanth.online -uroot -pExpenseApp@1 -e 'show databases;'
+if [ $? -ne 0 ]
+then
+    mysql_secure_installation --set-root-pass ExpenseApp@1
+else
+    echo "Already setup root password....Skipping"
+fi
 
 
 
