@@ -8,6 +8,7 @@ LOGFILE=/tmp/$TIMESTAMP-$SCRIPT_NAME.log
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
+Y="\e[33m"
 
 VALIDATE(){
     if [ $? -ne 0 ]
@@ -36,7 +37,7 @@ if [ $? -ne 0 ]
 then
     mysql_secure_installation --set-root-pass ExpenseApp@1
 else
-    echo "Already setup root password....Skipping"
+    echo "Already setup root password....$Y Skipping $N"
 fi
 
 
