@@ -41,6 +41,7 @@ mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 -e 'show databases;'   &>>$LO
 if [ $? -ne 0 ]
 then
     mysql_secure_installation --set-root-pass ExpenseApp@1  &>>$LOGFILE
+    VALIDATE $? "set up the root password"
 else
     echo -e "Already setup root password....$Y Skipping $N"
 fi
