@@ -29,10 +29,13 @@ else
 fi
 
 dnf install mysql-server -y &>>$LOGFILE
-VALIDATE $? "installingvmysql server"
+VALIDATE $? "installing mysql server"
 
 systemctl enable mysqld  &>>$LOGFILE
 VALIDATE $? "enabling the mysqld"
+
+systemctl start mysqld
+VALIDATE $? "starting the mysqld"
 
 mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 -e 'show databases;'   &>>$LOGFILE
 if [ $? -ne 0 ]
