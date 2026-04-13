@@ -1,6 +1,8 @@
 #!/bin/bash
 
+source ./common.sh
 CHECK_ROOT
+
 
 dnf install nginx -y 
 VALIDATE $? "install the nginx"
