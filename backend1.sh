@@ -71,10 +71,10 @@ VALIDATE $? "copy the code in backend1.service"
 systemctl daemon-reload   &>>$LOGFILE
 VALIDATE $? "realod the code"
 
-systemctl start backend  &>>$LOGFILE
+systemctl start backend1  &>>$LOGFILE
 VALIDATE $? "starting the backend"
 
-systemctl enable backend   &>>$LOGFILE
+systemctl enable backend1   &>>$LOGFILE
 VALIDATE $? "enable the backend"
 
 dnf install mysql -y   &>>$LOGFILE
@@ -83,7 +83,7 @@ VALIDATE $? "mysql install"
 mysql -h db.nsrikanth.online -uroot -pExpenseApp@1 < /app/schema/backend.sql   &>>$LOGFILE
 VALIDATE $? "Load the schema"
 
-systemctl restart backend   &>>$LOGFILE
+systemctl restart backend1   &>>$LOGFILE
 VALIDATE $? "restart the backend"
 
 
