@@ -21,9 +21,9 @@ VALIDATE(){
 
 if [ $USERID -ne 0 ]
 then
-    echo "$R please run the inside the root user $N"
+    echo -e "$R please run the inside the root user $N"
 else
-    echo "$G you are a root user $N"
+    echo -e "$G you are a root user $N"
 fi
 
 
